@@ -14,33 +14,37 @@ export type Product = {
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
-    title: 'Night Crows',
-    url: '#',
-    icon: 'earth',
+    title: 'Sign Up Boss',
+    url: '/dashboard/nightcrows/sign-up-boss',
+    icon: 'signature',
     isActive: false,
-    shortcut: ['e', 'e'],
-    items: [
-      {
-        title: 'Sign Up Boss',
-        url: '/dashboard/nightcrows/sign-up-boss',
-        icon: 'userPen',
-        shortcut: ['s', 's']
-      },
-      {
-        title: 'Rankings',
-        url: '/dashboard/nightcrows/rankings',
-        icon: 'userPen',
-        shortcut: ['r','r']
-      },
-      {
-        title: 'History',
-        url: '/',
-        icon: 'login',
-        shortcut: ['h','h']
-      }
-    ]
-  }
-  // },
+    shortcut: ['s', 's'],
+    permission: ['master','admin','user'],
+  },
+  {
+    title: 'Rankings',
+    url: '/dashboard/nightcrows/rankings',
+    icon: 'trophy',
+    isActive: false,
+    shortcut: ['r', 'r'],
+    permission: ['master','admin','user'],
+  },
+  {
+    title: 'History',
+    url: '/',
+    icon: 'history',
+    isActive: false,
+    shortcut: ['h', 'h'],
+    permission: ['master','admin','user'],
+  },
+  {
+    title: 'Connect User to Account',
+    url: '/',
+    icon: 'userRoundCog',
+    isActive: false,
+    shortcut: ['h', 'h'],
+    permission: ['master','admin'],
+  },
   // {
   //   title: 'Account',
   //   url: '#', // Placeholder as there is no direct link for the parent
@@ -62,15 +66,47 @@ export const navItems: NavItem[] = [
   //     }
   //   ]
   // },
-  // {
-  //   title: 'Kanban',
-  //   url: '/dashboard/kanban',
-  //   icon: 'kanban',
-  //   shortcut: ['k', 'k'],
-  //   isActive: false,
-  //   items: [] // No child items
-  // }
 ];
+
+export interface ListBoss {
+  type: string;
+  items?: BossItem[];
+}
+
+export interface BossItem {
+  id: string;  // Add id field
+  name: string;
+}
+
+export const BossCaves: ListBoss[] = [
+  {
+    type: 'Ice Cavern',
+    items: [
+      { id: 'c2', name: 'C2' },
+      { id: 'c7', name: 'C7' },
+      { id: 'c8', name: 'C8' },
+      { id: 'c9', name: 'C9' }
+    ]
+  },
+  {
+    type: 'Eerie Rock Sanctuary',
+    items: [
+      { id: 'r1', name: 'R1' },
+      { id: 'r2', name: 'R2' },
+      { id: 'r3', name: 'R3' },
+      { id: 'r4', name: 'R4' },
+      { id: 'r5', name: 'R5' },
+    ]
+  },
+  {
+    type: 'Battlefront',
+    items: [
+      { id: 'bf2', name: 'BF2 - Ruin Knight' },
+      { id: 'bf3', name: 'BF3 - Tandallan' },
+      { id: 'mini96', name: 'Mini96' },
+    ]
+  },
+]
 
 export interface SaleUser {
   id: number;

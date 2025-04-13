@@ -156,7 +156,7 @@
     @apply bg-background text-foreground;
   }
 }
-
+/* 
 @font-face {
   font-family: 'LufgaRegular';
   src: url('/fonts/Lufga/LufgaRegular.ttf') format('truetype');
@@ -185,4 +185,4 @@
 
 .font-thai {
   font-family: 'NotoSansThai-Regular', sans-serif;
-}
+} */

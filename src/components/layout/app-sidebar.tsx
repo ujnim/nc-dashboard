@@ -68,7 +68,7 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className='overflow-x-hidden bg-primary text-white'>
         <SidebarGroup>
-          {/* <SidebarGroupLabel className='text-white'>Overview</SidebarGroupLabel> */}
+          <SidebarGroupLabel className='text-white'>Night Crows</SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
               const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -84,6 +84,7 @@ export default function AppSidebar() {
                       <SidebarMenuButton
                         tooltip={item.title}
                         isActive={pathname === item.url}
+                        hidden={!item.permission?.includes(session?.user?.role || '')}
                       >
                         {item.icon && <Icon />}
                         <span>{item.title}</span>
@@ -112,6 +113,7 @@ export default function AppSidebar() {
                 <SidebarMenuItem
                   key={item.title}
                   className={pathname === item.url ? '!bg-primary' : ''}
+                  hidden={!item.permission?.includes(session?.user?.role || '')}
                 >
                   <SidebarMenuButton
                     asChild

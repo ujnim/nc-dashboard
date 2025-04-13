@@ -32,7 +32,13 @@ import {
     UserX2Icon,
     Earth,
     Cctv,
-    X
+    Dices,
+    Trophy,
+    Award,
+    X,
+    History,
+    Signature,
+    UserRoundCog,
   } from 'lucide-react';
   
   export type Icon = LucideIcon;
@@ -67,6 +73,12 @@ import {
     moon: Moon,
     earth: Earth,
     laptop: Laptop,
-    cctv: Cctv
+    cctv: Cctv,
+    dices: Dices,
+    award: Award,
+    trophy: Trophy,
+    history: History,
+    signature: Signature,
+    userRoundCog:UserRoundCog,
   };
   
