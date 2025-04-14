@@ -1,20 +1,3 @@
-// import { auth, signIn } from "@/lib/auth"
-
-// export default async function SignIn() {
-//     const session = await auth()
-//     console.log(session)
-//   return (
-//     <form
-//       action={async () => {
-//         "use server"
-//         await signIn("google")
-//       }}
-//     >
-//       <button type="submit">Signin with Google</button>
-//     </form>
-//   )
-// }
-
 import { GalleryVerticalEnd } from "lucide-react"
 import { auth, signIn } from "@/lib/auth"
 import { LoginForm } from "@/components/login-form"

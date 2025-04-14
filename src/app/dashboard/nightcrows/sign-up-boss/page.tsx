@@ -7,15 +7,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 import { Separator } from "@/components/ui/separator"
 import { CreateSheet } from "@/components/create-sheet"
-import { formatDateUTC8 } from "@/lib/utils"
+import { formatDateUTC8, statusBossCave } from "@/lib/utils"
 import { createClient } from "@supabase/supabase-js"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useSession } from "next-auth/react"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 export default function SignUpBossPage() {
     const queryClient = useQueryClient()
     const { data: sheets, isLoading, refetch } = trpc.nightCrows.getSignupBoss.useQuery()
+    console.log(sheets)
+
     const { data: session, status } = useSession()
     const getAccountGame = trpc.nightCrows.getAccountGame.useQuery(
         {
@@ -28,24 +32,68 @@ export default function SignUpBossPage() {
     )
 
     const updateSignup = trpc.nightCrows.updateSignupBoss.useMutation({
-        onSuccess: () => {
-            toast.success("Signed up successfully")
-            refetch()
+        onSuccess: (response) => {
+            if (response.status === 'info') {
+                toast.info(response.message);
+            } else if (response.status === 'success') {
+                toast.success(response.message);
+                refetch();
+            }
         },
         onError: (error) => {
-            toast.error(error.message)
+            toast.error(error.message);
         },
-    })
+    });
 
     const handleSignUp = async (sheetId: number) => {
         try {
+            if (!getAccountGame.data?.character_name) {
+                toast.error("Please login first");
+                return;
+            }
+            
             await updateSignup.mutateAsync({
                 id: sheetId,
-                username: getAccountGame.data?.character_name,
-            })
+                username: getAccountGame.data.character_name,
+            });
         } catch (error) {
-            console.error("Error signing up:", error)
+            console.error("Error signing up:", error);
         }
+    }
+
+    const PlayerInfoCard = ({ playerName }: { playerName: string }) => {
+        const { data: playerInfo } = trpc.nightCrows.getInfoAccountNightcrowsByUser.useQuery({ name: playerName }, { enabled: !!playerName })
+
+        const { data: xxx } = trpc.nightCrows.getMaxParticipation.useQuery()
+        console.log(xxx)
+
+        const { text, color } = statusBossCave(playerInfo?.cp, playerInfo?.acc, playerInfo?.def, 10, playerInfo?.class)
+
+        return (
+            <>
+                {playerInfo && (
+                    <TableRow key={playerInfo.character_name}>
+                        <TableCell>{playerName}</TableCell>
+                        <TableCell>
+                            <Badge variant="secondary">
+                                {playerInfo.atk} / {playerInfo.acc} / {playerInfo.def}
+                            </Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                            <Badge variant="secondary">
+                                {playerInfo.guild} - {playerInfo.class}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>
+                            <Badge className={color}>{text}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                            <Badge variant="secondary">Lv.{playerInfo.level}sss</Badge>
+                        </TableCell>
+                    </TableRow>
+                )}
+            </>
+        )
     }
 
     useEffect(() => {
@@ -106,16 +154,38 @@ export default function SignUpBossPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="flex pb-2">
-                                    <Icons.award className="pe-2" /> Loot owner : {sheet.loot_owner}
+                                    <Icons.award className="pe-2" /> Loot owner :{" "}
+                                    {sheet.playerDetails?.reduce((lowestPlayer : any, player : any) => {
+                                        if (!player?.ranking?.today_loot && (!lowestPlayer || (player?.ranking?.total || 0) < (lowestPlayer?.ranking?.total || 0))) {
+                                            return player
+                                        }
+                                        return lowestPlayer
+                                    }, null)?.character_name || "Not assigned"}
                                 </div>
                                 <Separator />
-                                <div className="flex py-4">
-                                    {sheet.detail}
-                                    {/* {sheet.detail.map((detai, index) => {
-                                        return (
-                                            <>adsa</>
-                                        )
-                                    })} */}
+                                <div className="flex py-4 flex-col gap-2">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-auto">Name</TableHead>
+                                                <TableHead>ATK / ACC / DEF</TableHead>
+                                                <TableHead>Guild / Job</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead className="text-right">AVG.</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {sheet.detail?.map((playerName: string, index: any) => (
+                                                <PlayerInfoCard key={index} playerName={playerName} />
+                                            ))}
+                                        </TableBody>
+                                        <TableFooter>
+                                            <TableRow>
+                                                <TableCell colSpan={4}>Total</TableCell>
+                                                <TableCell className="text-right">$2,500</TableCell>
+                                            </TableRow>
+                                        </TableFooter>
+                                    </Table>
                                 </div>
                             </CardContent>
                         </Card>

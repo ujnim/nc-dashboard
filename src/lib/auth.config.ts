@@ -26,7 +26,6 @@ const authConfig = {
         },
         async session({ session, token }) {
             if (session.user) {
-                // session.user.id = token.sub as string;
                 session.user.uuid = token.uuid as string;
                 session.user.role = token.role as string;
             }
@@ -34,8 +33,6 @@ const authConfig = {
         },
         async jwt({ token, user }) {
             if (user) {
-                // token.id = user.id;
-
                 const { data: userData } = await supabase
                     .from('users')
                     .select('id , roles(name)')
